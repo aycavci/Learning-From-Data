@@ -1,0 +1,75 @@
+bidirectional lstm - try!
+ELMo - definetely try!
+
+combine ELMo and bidirectional lstm with embedding layer!
+
+Transfer Learning - ULMFit
+Transfromer - developed by Google (Self-Attention?)
+BERT
+
+EXPERIMENT 1 (all accuracies on dev set):
+
+lstm layer with 150 units: 89.8% (124 secs with early stopping, 22/50 epochs)
+lstm layer with 150 units: 87.8% (110 secs with early stopping, 19/50 epochs)
+lstm layer with 75 units: 90.6% (159 secs secs with early stopping, 22/50 epochs) - default
+lstm layer with 75 units: 88.6% (100 secs secs with early stopping, 17/50 epochs) - default
+
+- We load this embedding matrix into an Embedding layer. 
+Note that we set trainable=False to prevent the weights from being updated during training.
+Note that we set trainable=False so as to keep the embeddings fixed (we don't want to update them during training).
+Embedding layer to be trainable will adapt it to fit the training set better, but it might cause overfitting and cause higher error on validation/test set.
+This is called "freezing" the layer: the state of a frozen layer won't be updated during training (either when training with fit() or when training with 
+any custom loop that relies on trainable_weights to apply gradient updates).
+
+in embedding layer (lstm 150), trainable=True: 88.2% (115 secs, 19/50 epochs)
+in embedding layer (lstm 75), trainable=True: 89.4% (88 secs, 16/50 epochs)
+
+leaving out pre-trained embeddings: -
+
+addig dense layer (150) between embedding and lstm layer (75): 84% (99 secs, 11/50 epochs)
+addig dense layer (300) between embedding and lstm layer (150): 86.8% (90 secs, 13/50 epochs)
+
+EXPERIMENT 2:
+
+- We set the return_sequences to True to be able to add multiple LSTM layers.
+return_sequences: Boolean. Whether to return the last output. in the output sequence, or the full sequence.
+
+with lstm(75)+lstm(25): 86.4% (221 secs, 27/50 epochs)
+with lstm(150)+lstm(75): 81.2% (221 secs, 18/50 epochs)
+with lstm(150)+lstm(75)+lstm(25): 80% (262 secs, 18/50 epochs)
+
+
+EXPERIMENT 3: - partially done
+
+- I suggest taking a look at (the first part of) this paper: https://arxiv.org/pdf/1512.05287.pdf 
+Regular dropout is applied on the inputs and/or the outputs, meaning the vertical arrows from x_t and to h_t. 
+In your case, if you add it as an argument to your layer, it will mask the inputs; you can add a Dropout layer after your recurrent layer to 
+mask the outputs as well. Recurrent dropout masks (or "drops") the connections between the recurrent units; 
+that would be the horizontal arrows in your picture. This picture is taken from the paper above. 
+On the left, regular dropout on inputs and outputs. On the right, regular dropout PLUS recurrent dropout:
+
+dropout 0.1 -> 82.2% (109 secs, 11/50 epochs)
+dropout 0.2 -> 88.8% (112 secs, 22/50 epochs)
+dropout 0.5 -> 83.2% (84 secs, 15/50 epochs)
+dropout 0.8 -> 77.8% (100 secs, 18/50 epochs)
+
+EXPERIMENT 4: - done
+
+adam(lr=3e-4): 90% (99 secs, 12/50 epochs)
+adam(lr=0.01): 88% (45 secs, 6/50 epochs)
+adagrad(lr=0.01): 90.8% (99 secs, 13/50 epochs)
+RMSprop(lr=0.01): 89.8 (59 secs, 5/50 epochs)
+adamax(lr=0.01): 90.8% (49 secs, 7/50 epochs)
+
+EXPERIMENT 5: - done
+
+bidirectional lstm layer: 89% (170 secs, 18/50 epochs)
+
+
+
+
+
+
+
+
+

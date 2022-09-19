@@ -1,0 +1,27 @@
+    # yellow: 1, green: 0, small: 1, large: 0, round: 1, irregular: 0
+
+    X = [["1", "1", "1"],
+         ["1", "1", "1"],
+         ["0", "1", "0"],
+         ["0", "0", "0"],
+         ["1", "0", "1"],
+         ["1", "1", "1"],
+         ["1", "1", "1"],
+         ["1", "1", "1"],
+         ["0", "1", "1"],
+         ["1", "0", "1"],
+         ["1", "0", "1"],
+         ["1", "0", "1"],
+         ["1", "0", "1"],
+         ["1", "0", "1"],
+         ["1", "1", "0"],
+         ["1", "0", "0"]]
+    Y = ["yes", "no", "yes", "no", "yes", "yes", "yes", "yes", "no", "no", "yes", "no", "no", "no", "yes", "yes"]
+
+    clf = DecisionTreeClassifier()
+    clf = clf.fit(X, Y)
+    plot_tree(clf)
+
+    dot_data = export_graphviz(clf, out_file=None)
+    graph = graphviz.Source(dot_data)
+    graph.render("exc1")
